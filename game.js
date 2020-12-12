@@ -89,16 +89,66 @@ function drawBricks() {
   });
 }
 
+// Move Paddle On Canvas
+function movePaddle() {
+  paddle.xPos += paddle.dx;
+
+  // Prevent passing through the walls
+  if (paddle.xPos + paddle.width > canvas.width) {
+    paddle.xPos = canvas.width - paddle.width;
+  }
+  if (paddle.xPos < 0) {
+    paddle.xPos = 0;
+  }
+}
+
+// Keydown
+function keyDown(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    paddle.dx = paddle.speed;
+  } else if (e.key === "Left" || e.key === "ArrowLeft") {
+    paddle.dx = -paddle.speed;
+  }
+}
+
+// Keyup
+function keyUp(e) {
+  if (
+    e.key === "Right" ||
+    e.key === "ArrowRight" ||
+    e.key === "Left" ||
+    e.key === "ArrowLeft"
+  ) {
+    paddle.dx = 0;
+  }
+}
+
 // Draw Everything
 function drawAll() {
+  // Clear Canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   drawScore();
   drawBall();
   drawPaddle();
   drawBricks();
 }
 
-drawAll();
-// EVENT LISTENERS
+// Update Canvas (Drawings & Animations)
+function update() {
+  movePaddle();
+
+  drawAll();
+
+  requestAnimationFrame(update);
+}
+
+// Call Update
+update();
+
+// *** EVENT LISTENERS ***
+
+// Buttons
 rulesBtn.addEventListener("click", () => {
   rulesContainer.classList.add("show");
 });
@@ -106,3 +156,7 @@ rulesBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
   rulesContainer.classList.remove("show");
 });
+
+// Keyboard
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
