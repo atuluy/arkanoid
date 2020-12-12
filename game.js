@@ -135,9 +135,31 @@ function moveBall() {
         ) {
           ball.dy *= -1;
           brick.visible = false;
+          increaseScore();
         }
       }
     });
+  });
+  // Lose Game If Hit The Bottom Wall
+  if (ball.yPos + ball.radius > canvas.height) {
+    showAllBricks();
+    score = 0;
+  }
+}
+
+// Increase Score
+function increaseScore() {
+  score++;
+
+  if (score % (brickRowCount * brickRowCount) === 0) {
+    showAllBricks();
+  }
+}
+
+// Make All Bricks Visible
+function showAllBricks() {
+  bricks.forEach((column) => {
+    column.forEach((brick) => (brick.visible = true));
   });
 }
 
