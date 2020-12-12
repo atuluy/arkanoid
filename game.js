@@ -4,7 +4,10 @@ const rulesContainer = document.getElementById("rules-container");
 const canvas = document.getElementById("canvas");
 
 const ctx = canvas.getContext("2d");
+
 let score = 0;
+const brickRowCount = 9;
+const brickColumnCount = 5;
 
 // Ball Properties
 const ball = {
@@ -26,8 +29,29 @@ const paddle = {
   dx: 0,
 };
 
-// FUNCTIONS
+// Brick Properties
+const brickInfo = {
+  width: 70,
+  height: 20,
+  padding: 10,
+  offsetX: 45, // It is going to be the position of the first brick
+  offsetY: 60,
+  visible: true,
+};
 
+// Create Bricks
+const bricks = [];
+
+for (let i = 0; i < brickRowCount; i++) {
+  bricks[i] = [];
+  for (let j = 0; j < brickColumnCount; j++) {
+    const x = i * (brickInfo.width + brickInfo.padding) + brickInfo.offsetX;
+    const y = j * (brickInfo.height + brickInfo.padding) + brickInfo.offsetY;
+    bricks[i][j] = { x, y, ...brickInfo };
+  }
+}
+
+// *** FUNCTIONS ***
 // Draw Ball On Canvas
 function drawBall() {
   ctx.beginPath();
@@ -52,11 +76,25 @@ function drawScore() {
   ctx.fillText(`Score: ${score} `, canvas.width - 100, 30);
 }
 
+// Draw Bricks On Canvas
+function drawBricks() {
+  bricks.forEach((column) => {
+    column.forEach((brick) => {
+      ctx.beginPath();
+      ctx.rect(brick.x, brick.y, brick.width, brick.height);
+      ctx.fillStyle = brick.visible ? "#8d93ab" : "transparent";
+      ctx.fill();
+      ctx.closePath();
+    });
+  });
+}
+
 // Draw Everything
 function drawAll() {
+  drawScore();
   drawBall();
   drawPaddle();
-  drawScore();
+  drawBricks();
 }
 
 drawAll();
