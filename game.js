@@ -102,6 +102,45 @@ function movePaddle() {
   }
 }
 
+// Move Ball On Canvas
+function moveBall() {
+  ball.xPos += ball.dx;
+  ball.yPos += ball.dy;
+
+  // Detect Wall Collision (x-axis)
+  if (ball.xPos + ball.radius > canvas.width || ball.xPos - ball.radius < 0) {
+    ball.dx *= -1;
+  }
+  // Detect Wall Collision (y-axis)
+  if (ball.yPos + ball.radius > canvas.height || ball.yPos - ball.radius < 0) {
+    ball.dy *= -1;
+  }
+  // Detect Paddle Collision
+  if (
+    ball.xPos - ball.radius > paddle.xPos &&
+    ball.xPos + ball.radius < paddle.xPos + paddle.width &&
+    ball.yPos + ball.radius > paddle.yPos
+  ) {
+    ball.dy = -ball.speed;
+  }
+  // Detect Brick Collision
+  bricks.forEach((column) => {
+    column.forEach((brick) => {
+      if (brick.visible) {
+        if (
+          ball.xPos - ball.radius > brick.x && // check left brick side
+          ball.xPos + ball.radius < brick.x + brick.width && // check right brick side
+          ball.yPos + ball.radius > brick.y && // check top brick side
+          ball.yPos - ball.radius < brick.y + brick.height // check bottom brick side
+        ) {
+          ball.dy *= -1;
+          brick.visible = false;
+        }
+      }
+    });
+  });
+}
+
 // Keydown
 function keyDown(e) {
   if (e.key === "Right" || e.key === "ArrowRight") {
@@ -137,6 +176,7 @@ function drawAll() {
 // Update Canvas (Drawings & Animations)
 function update() {
   movePaddle();
+  moveBall();
 
   drawAll();
 
